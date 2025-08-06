@@ -4,8 +4,12 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import {config} from './config/env';
 import { errorHandler } from "./error/error.handller";
+import testDbConnection from "./config/db";
+
+// Importing the Routes here
 
 const app = express();
+testDbConnection();
 
 // App Security
 app.use(helmet());
@@ -39,7 +43,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/getApp', (req:Request, res:Response)=>{
   res.send("App is running Successfully");
 });
-
 
 
 app.use(errorHandler);
