@@ -7,9 +7,20 @@ import { errorHandler } from "./error/error.handller";
 import testDbConnection from "./config/db";
 
 // Importing the Routes here
+import authRoutes from './routes/auth.route';
+import userRoutes from './routes/user.routes';
+import leadRoutes from './routes/lead.routes';
+
+import cookieParser from "cookie-parser";
 
 const app = express();
 testDbConnection();
+
+
+// Middleware to parse JSON and cookies
+app.use(express.json());
+app.use(cookieParser());
+
 
 // App Security
 app.use(helmet());
@@ -31,7 +42,7 @@ const apiLimiter = rateLimit({
   },
   legacyHeaders: false,
 });
-app.use(apiLimiter);
+// app.use(apiLimiter);
 
 
 
@@ -40,11 +51,20 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use('/getApp', (req:Request, res:Response)=>{
+app.use('/api/getApp', (req:Request, res:Response)=>{
   res.send("App is running Successfully");
 });
 
 
+
+// App Routes will be used here
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/leads', leadRoutes);
+
+
+
+// Error Handling Middleware
 app.use(errorHandler);
 
 app.listen(config.port, () => {
